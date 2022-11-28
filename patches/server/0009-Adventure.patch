@@ -3268,7 +3268,7 @@ index 446fdca49a5a6999626a7ee3a1d5c168b15a09dd..f9863e138994f6c7a7975a852f106faa
      public boolean isOp() {
          return true;
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 75143ba3e1e8a001801455c9bf1235186833dbae..10a9a108448509ceb7d40a4bddb067384c4c9f26 100644
+index 75143ba3e1e8a001801455c9bf1235186833dbae..693789deb95b751de1d1ca3bc230f579336ee310 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -275,14 +275,39 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
@@ -3494,7 +3494,7 @@ index 75143ba3e1e8a001801455c9bf1235186833dbae..10a9a108448509ceb7d40a4bddb06738
      @Override
      public int getPing() {
          return this.getHandle().latency;
-@@ -1953,6 +2046,193 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -1953,6 +2046,243 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
          return this.getHandle().allowsListing();
      }
  
@@ -3511,9 +3511,56 @@ index 75143ba3e1e8a001801455c9bf1235186833dbae..10a9a108448509ceb7d40a4bddb06738
 +    }
 +
 +    @Override
++    public void deleteMessage(net.kyori.adventure.chat.SignedMessage.Signature signature) {
++        if (getHandle().connection == null) return;
++        this.getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundDeleteChatPacket(new net.minecraft.network.chat.MessageSignature(signature.bytes())));
++    }
++
++    // TODO DISGUISED 1.19.3
++    @Override
++    public void sendMessage(net.kyori.adventure.text.Component message, net.kyori.adventure.chat.ChatType.Bound boundChatType) {
++        super.sendMessage(message, boundChatType);
++    }
++
++    @Override
++    public void sendMessage(net.kyori.adventure.chat.SignedMessage signedMessage, net.kyori.adventure.chat.ChatType.Bound boundChatType) {
++        if (getHandle().connection == null) return;
++
++        // TODO: 1.19.3 do not send player chat messages when system user!!! This will cause a kick
++//        if (signedMessage.isSystem()) {
++//            final net.kyori.adventure.text.Component content;
++//            if (signedMessage.unsignedContent() == null) {
++//                content = net.kyori.adventure.text.Component.text(signedMessage.message());
++//            } else {
++//                content = signedMessage.unsignedContent();
++//            }
++//
++//            this.getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundSystemChatPacket(content, false));
++//        }
++
++        net.minecraft.network.chat.PlayerChatMessage playerChatMessage = new net.minecraft.network.chat.PlayerChatMessage(
++            new net.minecraft.network.chat.SignedMessageHeader(null, signedMessage.identity().uuid()), // TODO
++            new net.minecraft.network.chat.MessageSignature(signedMessage.signature().bytes()),
++            new net.minecraft.network.chat.SignedMessageBody(new net.minecraft.network.chat.ChatMessageContent(signedMessage.message()), signedMessage.timestamp(), signedMessage.salt(), null), // TODO
++            java.util.Optional.ofNullable(io.papermc.paper.adventure.PaperAdventure.asVanilla(signedMessage.unsignedContent())),
++            net.minecraft.network.chat.FilterMask.PASS_THROUGH
++        );
++
++        net.minecraft.network.chat.OutgoingPlayerChatMessage outgoingPlayerChatMessage = net.minecraft.network.chat.OutgoingPlayerChatMessage.create(playerChatMessage);
++        net.minecraft.network.chat.ChatType.Bound bound = new net.minecraft.network.chat.ChatType.Bound(
++            this.getHandle().getLevel().registryAccess().registryOrThrow(net.minecraft.core.Registry.CHAT_TYPE_REGISTRY).get(io.papermc.paper.adventure.PaperAdventure.asVanilla(boundChatType.type().key())),
++            io.papermc.paper.adventure.PaperAdventure.asVanilla(boundChatType.name()),
++            io.papermc.paper.adventure.PaperAdventure.asVanilla(boundChatType.target())
++        );
++
++        outgoingPlayerChatMessage.sendToPlayer(this.getHandle(), false, bound);
++        outgoingPlayerChatMessage.sendHeadersToRemainingPlayers(this.getHandle().getServer().getPlayerList());
++    }
++
++    @Deprecated(forRemoval = true)
++    @Override
 +    public void sendMessage(final net.kyori.adventure.identity.Identity identity, final net.kyori.adventure.text.Component message, final net.kyori.adventure.audience.MessageType type) {
 +        if (getHandle().connection == null) return;
-+        final net.minecraft.core.Registry<net.minecraft.network.chat.ChatType> chatTypeRegistry = this.getHandle().level.registryAccess().registryOrThrow(net.minecraft.core.Registry.CHAT_TYPE_REGISTRY);
 +        this.getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundSystemChatPacket(message, false));
 +    }
 +
@@ -3621,10 +3668,12 @@ index 75143ba3e1e8a001801455c9bf1235186833dbae..10a9a108448509ceb7d40a4bddb06738
 +    public void playSound(final net.kyori.adventure.sound.Sound sound, final double x, final double y, final double z) {
 +        final ResourceLocation name = io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.name());
 +        final java.util.Optional<net.minecraft.sounds.SoundEvent> event = net.minecraft.core.Registry.SOUND_EVENT.getOptional(name);
++        final long seed = sound.seed().orElse(this.getHandle().getRandom().nextLong());
++
 +        if (event.isPresent()) {
-+            this.getHandle().connection.send(new ClientboundSoundPacket(event.get(), io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.source()), x, y, z, sound.volume(), sound.pitch(), this.getHandle().getRandom().nextLong())); // TODO adventure sound seed
++            this.getHandle().connection.send(new ClientboundSoundPacket(event.get(), io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.source()), x, y, z, sound.volume(), sound.pitch(), seed));
 +        } else {
-+            this.getHandle().connection.send(new ClientboundCustomSoundPacket(name, io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.source()), new Vec3(x, y, z), sound.volume(), sound.pitch(), this.getHandle().getRandom().nextLong())); // TODO adventure sound seed
++            this.getHandle().connection.send(new ClientboundCustomSoundPacket(name, io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.source()), new Vec3(x, y, z), sound.volume(), sound.pitch(), seed));
 +        }
 +    }
 +
@@ -3638,13 +3687,14 @@ index 75143ba3e1e8a001801455c9bf1235186833dbae..10a9a108448509ceb7d40a4bddb06738
 +        } else {
 +            throw new IllegalArgumentException("Sound emitter must be an Entity or self(), but was: " + emitter);
 +        }
++        final long seed = sound.seed().orElse(this.getHandle().getRandom().nextLong());
 +
 +        final ResourceLocation name = io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.name());
 +        final java.util.Optional<net.minecraft.sounds.SoundEvent> event = net.minecraft.core.Registry.SOUND_EVENT.getOptional(name);
 +        if (event.isPresent()) {
-+            this.getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundSoundEntityPacket(event.get(), io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.source()), entity, sound.volume(), sound.pitch(), this.getHandle().getRandom().nextLong())); // TODO adventure sound seed
++            this.getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundSoundEntityPacket(event.get(), io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.source()), entity, sound.volume(), sound.pitch(), seed));
 +        } else {
-+            this.getHandle().connection.send(new ClientboundCustomSoundPacket(name, io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.source()), entity.position(), sound.volume(), sound.pitch(), this.getHandle().getRandom().nextLong())); // TODO adventure sound seed
++            this.getHandle().connection.send(new ClientboundCustomSoundPacket(name, io.papermc.paper.adventure.PaperAdventure.asVanilla(sound.source()), entity.position(), sound.volume(), sound.pitch(), seed));
 +        }
 +    }
 +

@@ -695,7 +695,7 @@ index 0000000000000000000000000000000000000000..0fda52841b5e1643efeda92106124998
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/commands/CommandFunction.java b/src/main/java/net/minecraft/commands/CommandFunction.java
-index eb434d46add6960dba026a03ec3c582a4277bfbd..04adaa6f393be8c3dfa13f371e6bc51082d1d1be 100644
+index 3ceeddf4c2898172d24db9ee1bab8d6b17e36128..8273ee1c5e513f02c9743ee38c9b7cf700e2ecad 100644
 --- a/src/main/java/net/minecraft/commands/CommandFunction.java
 +++ b/src/main/java/net/minecraft/commands/CommandFunction.java
 @@ -16,6 +16,15 @@ import net.minecraft.server.ServerFunctionManager;
@@ -729,7 +729,7 @@ index 13421daa96b4ba302581f36abcd730952713d8cd..049e64c355d5f064009b1107ad15d28c
                      } catch (Exception exception) {
                          if (listener.shouldPropagateHandlingExceptions()) {
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e4220f14a5ebf43dd3491fc8649c2be5238c5798..53be6189d3fa6a65a09996683913fbbf5133dcb7 100644
+index 77cb412656e741fdb7e002011e3a99ac304118cb..2b2b71f3963e66fa0d2683b10581b1a38c774549 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -177,7 +177,7 @@ import org.bukkit.event.player.AsyncPlayerChatPreviewEvent;
@@ -997,7 +997,7 @@ index f4a6a6addbba65b3415320977048aeba0eadba63..c905602d23cdf3af1de7ab4419f11856
      }
  
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 1fbe1b6de925f71763f79fe3d2371b70a8650f25..2a9e5fb8164f79b0f9c1cb5497216e51f9df3454 100644
+index 8c6ca0acde4cb266a844a1670296ac327e3382dc..44f12777f115ca4d465bc603e1e23932e102efb2 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -1,8 +1,10 @@
@@ -1054,7 +1054,7 @@ index 1fbe1b6de925f71763f79fe3d2371b70a8650f25..2a9e5fb8164f79b0f9c1cb5497216e51
  
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 1a8c5ce3ecce9cbbc8496ea3882b18c297964e33..8c99e9d1cc1abf5a425846eb4edd52bf38aa2f75 100644
+index 85238e1bcb2a7ac8f824f10409ee5a4bc7e6c002..0bf02ffba51e0dda6d01972c3f8c834c42d72512 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -414,13 +414,15 @@ public class ServerChunkCache extends ChunkSource {
@@ -1146,7 +1146,7 @@ index 1a8c5ce3ecce9cbbc8496ea3882b18c297964e33..8c99e9d1cc1abf5a425846eb4edd52bf
      }
  
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index b2f79a0c9caa6783816afc36531c94378e832cb7..99d44faab5b5da244fdc170c73d73723c174c8fd 100644
+index f5ed23104c781098e64850b32963d13c1a611b96..3049d732ce3df71a4755ee9160d4f3fae052d1b6 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -1,6 +1,8 @@
@@ -1262,7 +1262,7 @@ index b2f79a0c9caa6783816afc36531c94378e832cb7..99d44faab5b5da244fdc170c73d73723
                  this.entityManager.saveAll();
              } else {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 93d02b5de0721e3c5903e80bbf8b3b56ec3ab45d..4e7db441f68019d6e5d3359605b76bc4b258e87e 100644
+index f1441c9fde9d736d4c053073a88a7a79222f5c5c..2f2d92bfda1713c7454e73cb2d2e77f69184a2d4 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -342,7 +342,6 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
@@ -1309,7 +1309,7 @@ index 93d02b5de0721e3c5903e80bbf8b3b56ec3ab45d..4e7db441f68019d6e5d3359605b76bc4
      }
      // CraftBukkit end
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 3710f544a491a837b973daedc2dfa51357b70b56..e7fcb402e3d4e0707a28505a9fb6642764034e23 100644
+index 8246a78e4e01ee24db88660351bc0f27a6f320aa..5f85d48fbd0ce34c21acec4849ad3efcc73c7210 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -1,5 +1,6 @@
@@ -1425,7 +1425,7 @@ index cdf8020194f2ec1fe7b65b22c8e1f5b1c23eaefa..2db27f5e3e3c1bb0502c055f78c4a81e
      }
  
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index e283e8383a52c74cebd16fa7642a5e3993b2ed1a..8c2d76c27c784536c3b573bf4ae4f47c2c3c4b6b 100644
+index d2958d4c897d93f81ab4faea2c67783c2f0de37f..4cbd068bbb19eec3a702bc9067ac4f106ddf00e1 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -140,7 +140,7 @@ import org.bukkit.event.entity.EntityTeleportEvent;
@@ -1588,7 +1588,7 @@ index dec38e58e30c84887e9d29436c0f76c70c0a627d..be08224c8107aab3e9a3645a20977dd1
      private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new CraftPersistentDataTypeRegistry();
      public CraftPersistentDataContainer persistentDataContainer;
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index bcd0287d99eeba2b3534b4a298dc4b79b293ec58..b322d9b7bd9e107a9adf995b6c4db4ff0af05fc1 100644
+index 41dda06ac8d9adc263936bc417d35b62a8801565..1c6f51c227a0b6da81eeb817f996789645a547db 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -680,6 +680,7 @@ public class LevelChunk extends ChunkAccess {
@@ -1608,7 +1608,7 @@ index bcd0287d99eeba2b3534b4a298dc4b79b293ec58..b322d9b7bd9e107a9adf995b6c4db4ff
          }
      }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
-index 98ba88896c73651591b8ad8e070868fb443ae999..864e2e0355a5fb8c1d4a5b0896ba299faf9ea534 100644
+index e1558691dc23ad812358e3890020fdc7d6d7c28b..6c844a826892c5f31d5afb9ead56d4cff3ab5968 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
 @@ -507,13 +507,10 @@ public class ChunkSerializer {
@@ -1839,10 +1839,10 @@ index b0ffa23faf62629043dfd613315eaf9c5fcc2cfe..00000000000000000000000000000000
 -    }
 -}
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 10a9a108448509ceb7d40a4bddb067384c4c9f26..d5e6123622f6bbc4c3b8b91be7f9ba8e5c1c22d8 100644
+index 693789deb95b751de1d1ca3bc230f579336ee310..af37f4ab01fcd0a4f01e400c10815136417654d3 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -2319,6 +2319,14 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -2369,6 +2369,14 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
  
              CraftPlayer.this.getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundSystemChatPacket(components, position == net.md_5.bungee.api.ChatMessageType.ACTION_BAR));
          }
@@ -2035,7 +2035,7 @@ index e52ef47b783785dc214746b678e7b549aea9a274..3d90b3426873a3528af14f7f1ab0adae
          this.value = value;
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 56a3dc9dcbd2229c60aa64e2d4c0ed147539a5ef..e309a589e6ce76294187c906820a88367da25305 100644
+index ede9c2d8e98fd42a936045e82b3e2c174f7bac0b..a3b303c2593b3f06b40ec827592a349431d0aaf9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 @@ -222,6 +222,12 @@ public final class CraftMagicNumbers implements UnsafeValues {
